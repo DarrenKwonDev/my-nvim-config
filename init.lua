@@ -126,3 +126,47 @@ vim.api.nvim_create_autocmd("FileType", {
   end,
 })
 
+
+-------------------------------------------------------------
+-- path
+
+vim.opt.path = { ".", "**" }
+
+
+local function detect_and_setup_project()
+  -- 현재 버퍼의 파일 확장자를 가져옵니다.
+  local ext = vim.fn.expand("%:e")
+
+  if ext == "c" or ext == "cpp" or ext == "h" or ext == "hpp" then
+    -- C/C++ 파일이면 시스템 헤더와 프로젝트 내부 include 디렉터리를 추가
+    vim.opt_local.path:append("/usr/include/**")
+    vim.opt_local.path:append("/usr/local/include/**")
+    if vim.fn.isdirectory("include") == 1 then
+      vim.opt_local.path:append("include/**")
+    end
+    if vim.fn.isdirectory("src/include") == 1 then
+      vim.opt_local.path:append("src/include/**")
+    end
+    vim.opt_local.suffixesadd:append({ ".h", ".c", ".hpp", ".cpp" })
+  
+  elseif ext == "js" or ext == "jsx" or ext == "ts" or ext == "tsx" then
+    -- Node.js 관련 파일이면 src와 components 디렉터리를 추가
+    vim.opt_local.path:append("src/**")
+    vim.opt_local.path:append("components/**")
+    vim.opt_local.suffixesadd:append({ ".js", ".jsx", ".ts", ".tsx" })
+  
+  elseif ext == "py" then
+    -- Python 파일이면 .py 확장자만 추가
+    vim.opt_local.suffixesadd:append(".py")
+  end
+end
+
+
+-- BufEnter, DirChanged 등 특정 이벤트에서 호출하도록 할 수 있음
+vim.api.nvim_create_autocmd("BufReadPost", {
+  pattern = "*",
+  callback = function()
+    detect_and_setup_project()
+  end,
+})
+

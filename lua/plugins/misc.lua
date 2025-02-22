@@ -28,6 +28,26 @@ return {
       require("nvim-web-devicons").setup { default = true }
     end,
   },
+  -- 상단 버퍼 리스트
+  {
+    "akinsho/bufferline.nvim",
+    version = "*", -- 최신 안정 버전을 사용 (혹은 tag를 명시할 수 있음)
+    dependencies = { "nvim-tree/nvim-web-devicons" },
+    config = function()
+      vim.opt.termguicolors = true  -- 필수: GUI 색상 사용
+
+      require("bufferline").setup{
+        -- 최소한의 기본 설정만 사용합니다.
+        options = {
+          mode = "buffers",           -- 버퍼 모드 사용 (탭처럼 보여줌)
+          numbers = "ordinal",        -- 탭에 순번을 표시합니다.
+          separator_style = "thin",   -- 얇은 구분선
+          always_show_bufferline = true,  -- 버퍼라인을 항상 표시
+        },
+      }
+    end,
+  },
+
   -- 하단 상태표시줄
   {
     "nvim-lualine/lualine.nvim",
