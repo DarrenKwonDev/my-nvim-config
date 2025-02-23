@@ -28,6 +28,47 @@ return {
       require("nvim-web-devicons").setup { default = true }
     end,
   },
+
+  -- 현재 word 에 밑줄
+  {
+    "RRethy/vim-illuminate",
+    event = { "BufReadPost", "BufNewFile" },
+    opts = {
+      -- delay는 너무 짧으면 성능에 영향을 줄 수 있어 적절한 값으로 설정
+      delay = 150,
+      -- LSP, Treesitter, 정규식 순으로 참조를 찾습니다
+      providers = {
+        'lsp',
+        'treesitter',
+        'regex',
+      },
+      -- 대용량 파일 처리를 위한 설정
+      large_file_cutoff = 2000,
+      -- 파일 타입별 비활성화
+      filetypes_denylist = {
+        'dirvish',
+        'fugitive',
+        'lazy',
+        'NvimTree',
+        'TelescopePrompt',
+      },
+      -- 커서 아래 단어도 하이라이트
+      under_cursor = true,
+    },
+    config = function(_, opts)
+      require("illuminate").configure(opts)
+
+      vim.api.nvim_set_hl(0, "IlluminatedWordText", { bg = "#FFCF5F", fg = "#000000" })
+      vim.api.nvim_set_hl(0, "IlluminatedWordRead", { bg = "#FFCF5F", fg = "#000000" })
+      vim.api.nvim_set_hl(0, "IlluminatedWordWrite", { bg = "#FFCF5F", fg = "#000000" })
+
+
+      -- 키매핑 (선택사항)
+      vim.keymap.set('n', '<leader>ti', '<cmd>IlluminateToggle<cr>', { desc = 'Toggle Illuminate' })
+    end,
+  },
+
+
   -- 상단 버퍼 리스트
   {
     "akinsho/bufferline.nvim",
@@ -61,6 +102,7 @@ return {
       }
     end,
   },
+
   -- 포매팅
   {
     "stevearc/conform.nvim",
